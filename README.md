@@ -1,6 +1,5 @@
 # 3CX XAPI Tutorial in C# (.NET 9)
 
-![License](https://img.shields.io/github/license/YourUsername/YourRepository)
 ![.NET](https://img.shields.io/badge/.NET-9.0-blue)
 
 ## Project Description
