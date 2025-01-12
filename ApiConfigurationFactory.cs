@@ -1,4 +1,6 @@
-﻿using System;
+﻿using _3CX_API_20.Models;
+using _3CX_API_20.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +15,7 @@ namespace _3CX_API_20
         private readonly string _password;
         private TokenResponse _accessTokenResponse;
         private long _expires;
-        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _semaphore = new(1, 1);
 
 
         public ApiConfigurationFactory(string basePath, string username, string password)

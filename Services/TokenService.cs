@@ -1,11 +1,12 @@
-﻿using System;
+﻿using _3CX_API_20.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace _3CX_API_20
+namespace _3CX_API_20.Services
 {
     public static class TokenService
     {
@@ -47,4 +48,4 @@ namespace _3CX_API_20
 
 
 
-    }
+}

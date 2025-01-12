@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace _3CX_API_20
+namespace _3CX_API_20.Models
 {
     public class TokenResponse
     {
