@@ -13,9 +13,9 @@ public class Program
 {
     public static async Task Main(string[] args)
     {
-        string basePath = "https://voice-3cx-devtest.3cx.pl:5001";
-        string username = "123";
-        string password = "IKP7nvjODlnFfkc8XUF7DnfN46PBoL3w";
+        string basePath = "https://URL:PORT";
+        string username = "UERNAMEAPI";
+        string password = "Password";
 
         var factory = new ApiConfigurationFactory(basePath, username, password);
         ApiConfiguration config = factory.CreateXAPIConfiguration();
