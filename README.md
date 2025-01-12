@@ -17,7 +17,6 @@ Based on the [official 3CX XAPI tutorial](https://github.com/3cx/xapi-tutorial),
 
 - `Program.cs`: The main program file containing API call implementations and specific scenarios.
 - `README.md`: Project documentation.
-- `LICENSE`: Project license.
 
 ## Requirements
 
