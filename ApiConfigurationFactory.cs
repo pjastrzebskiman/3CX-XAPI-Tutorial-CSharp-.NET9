@@ -43,7 +43,7 @@ namespace _3CX_API_20
                 if (_accessTokenResponse == null || now > _expires)
                 {
                     _accessTokenResponse = await TokenService.GetAccessTokenAsync(_basePath, _username, _password);
-                    _expires = now + (_accessTokenResponse.ExpiresIn * 60 * 1000); // Przeliczanie na milisekundy
+                    _expires = now + (_accessTokenResponse.ExpiresIn * 60 * 1000); 
                 }
                 return _accessTokenResponse.AccessToken;
             }
