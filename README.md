@@ -28,7 +28,7 @@ Based on the [official 3CX XAPI tutorial](https://github.com/3cx/xapi-tutorial),
 1. **Clone the Repository**
 
     ```bash
-    git clone https://github.com/YourUsername/YourRepository.git
+    git clone https://github.com/pjastrzebskiman/3CX-XAPI-Tutorial-CSharp-.NET9.git
     ```
 
 2. **Navigate to the Project Directory**
