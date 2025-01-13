@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static _3CX_API_20.Models.UserUpdatePermissions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public class Program
 {
@@ -25,6 +26,7 @@ public class Program
         var usersApi = new UsersService(apiService, httpClient);
         var groupsService = new GroupsServices(apiService, httpClient);
         var usersService = new UsersService(apiService, httpClient);
+        var queuesService = new QueueServices(apiService, httpClient);
         try
         {
              string miasto;
@@ -47,7 +49,7 @@ public class Program
               }
 
               Console.WriteLine($"City entered correctly: {miasto}");
-             
+
             
                         bool exit = false;
                         while (!exit)
@@ -57,7 +59,7 @@ public class Program
                             Console.WriteLine("1.Ustaw Role user i główny departament na XX.Dial");
                             Console.WriteLine("2.");
                             Console.WriteLine("3. Wyjdź");
-                            Console.Write("Wybierz opcję (1-3): ");
+                            Console.Write("Wybierz opcję (1-6): ");
                             string choice = Console.ReadLine();
 
                             switch (choice)
@@ -74,27 +76,70 @@ public class Program
                                     break;
                                 case "2":
 
-                                        string searchgr = $"StartsWith(Name, '{10}..')";
-                                        var idGroup = await GetGroupIdByParams(groupsService, "10", searchgr);
-                                        await DeleteAllFromGroup(idGroup, groupsService);//a.	usunie wszystkich użytkowników z departamentów XX..<nazwa sklepu>
+                                        string searchgr = $"StartsWith(Name, '{miasto}..')";
+                                        var idGroup = await GetGroupIdByParams(groupsService, "", searchgr);
+                                        await DeleteAllFromGroup(idGroup, groupsService);
+                                        //a.	usunie wszystkich użytkowników z departamentów XX..<nazwa sklepu>
 
-
-                                        string searchuser = $"StartsWith(Number, '{10}') and (substring(Number, 2, 1) eq '2')";
-                                        var listuser = await GetListWithParams(usersApi, "10", searchuser);
-                                        await AddMemberToGroup(listuser, groupsService, idGroup);//b.	doda użytkowników XX2.. do departamentów XX..<nazwa sklepu>
-                                                                                                 // lista członków departamentu
+                                        string searchuser = $"StartsWith(Number, '{miasto}') and (substring(Number, 2, 1) eq '2')";
+                                        var listuser = await GetListWithParams(usersApi, "", searchuser);
+                                        await AddMemberToGroup(listuser, groupsService, idGroup);
+                                        //b.	doda użytkowników XX2.. do departamentów XX..<nazwa sklepu>
                                         await ChangePermissionsOnUsers(listuser, usersService, idGroup, true, true, true, true, true, true, false,false,false, false, false, true, false, true, true);
                                         //c.	nada członkom departamentu uprawnienia: Show My Calls, Presence, Calls, Operations
 
-                                        string search2 = $"StartsWith(Number, '{10}') and (substring(Number, 2, 1) eq '5' or substring(Number, 2, 1) eq '6' or substring(Number, 2, 1) eq '7')";
-                                        var listuser2 = await GetListWithParams(usersApi, "10", search2);
+                                        string search2 = $"StartsWith(Number, '{miasto}') and (substring(Number, 2, 1) eq '5' or substring(Number, 2, 1) eq '6' or substring(Number, 2, 1) eq '7')";
+                                        var listuser2 = await GetListWithParams(usersApi, "", search2);
                                         await ChangePermissionsOnUsersNoMembers(listuser2, usersService, idGroup);
                                         //d.	nada użytkownikom XX[567] uprawnienia: Presence, Calls, Operations do departamentu XX..<nazwa sklepu> 
 
-
-
-                        break;
+                                    break;
                                 case "3":
+                                    string searchgr_mng = $"StartsWith(Name, '{miasto}.Zarządzanie')";
+                                    var idGroup_mng = await GetGroupIdByParams(groupsService, "", searchgr_mng);
+                                    await DeleteAllFromGroup(idGroup_mng, groupsService);
+                                    //a.	usunie wszystkich użytkowników z departamentów XX.Zarządzanie 
+
+                                    string searchuser_mng = $"StartsWith(Number, '{miasto}') and (substring(Number, 2, 1) eq '3')";
+                                    var listuser_mng = await GetListWithParams(usersApi, "", searchgr_mng);
+                                    await AddMemberToGroup(listuser_mng, groupsService, idGroup_mng);
+                                    //b.	doda użytkowników XX3.. do departamentów  XX.Zarządzanie
+
+                                    await ChangePermissionsOnUsers(listuser_mng, usersService, idGroup_mng, true, true, true, true, true, true, false, false, false, false, false, true, false, true, true);
+                                    //c.	nada członkom departamentu uprawnienia: Show My Calls, Presence, Calls, Operations
+
+                                    string search2_mng = $"StartsWith(Number, '{miasto}') and (substring(Number, 2, 1) eq '5' or substring(Number, 2, 1) eq '6' or substring(Number, 2, 1) eq '7')";
+                                    var listuser2_mng = await GetListWithParams(usersApi, "", search2_mng);
+                                    await ChangePermissionsOnUsersNoMembers(listuser2_mng, usersService, idGroup_mng);
+                                    //d.	nada użytkownikom XX[567] uprawnienia: Presence, Calls, Operations do departamentu XX.Zarządzanie
+
+                                     break;
+                                case "4":
+                                    Console.WriteLine("Podaj końcówke numeru kolejki");
+                                    string kolejka = Console.ReadLine().ToString();
+                                    string searchgr_4 = $"StartsWith(Name, '{10}.{kolejka}.')";
+                                    var idGroup_4 = await GetGroupIdByParams(groupsService, "", searchgr_4);
+                                    await DeleteAllFromGroup(idGroup_4, groupsService);
+                                    //a. usunie wszystkich użytkowników z departamentów XX.<końcówka numeru kolejki>.<nazwa sklepu>
+
+                                    string search4 = $"StartsWith(Number, '{10}') and (substring(Number, 2, 1) eq '5' or substring(Number, 2, 1) eq '6' or substring(Number, 2, 1) eq '7')";
+                                    var listuser4 = await GetListWithParams(usersApi, "10", search4);
+                                    await ChangePermissionsOnUsersNoMembers(listuser4, usersService, idGroup_4);
+                                    // b.	nada użytkownikom XX[567] uprawnienia: Presence, Calls, Operations do departamentu XX.<końcówka numeru kolejki>.<nazwa sklepu>
+                                   
+                                    string searchqueue = $"StartsWith(Numner, '{miasto}1') and (substring(Numner, 3, 1) eq '0' or substring(Numner, 3, 1) eq '1' )";
+                                    var queues = await GetIdByParams(queuesService, searchqueue);
+
+                                    foreach (var queue in queues.Value)
+                                    {
+                                        Console.WriteLine($"ID: {queue.Id}, Name: {queue.Name}");
+                                        await queuesService.DeleteAllAgentsFromQueue(queue.Id);
+                                    }
+
+                                    // c.usunie użytkowników z kolejki XX1<końcówka numeru kolejki>
+                                    break;
+
+                                case "6":
                                     exit = true;
                                     Console.WriteLine("Zakończono program. Naciśnij dowolny klawisz...");
                                     Console.ReadKey();
@@ -107,8 +152,9 @@ public class Program
                         }
 
 
-
             
+
+
 
 
             Console.WriteLine("Koniec");
@@ -127,6 +173,19 @@ public class Program
 
     }
 
+
+    public static async Task<QueuesResponse> GetIdByParams(QueueServices queueServices, string search)
+    {
+        var queues = await queueServices.ListQueueAsync(
+            top: 10,
+            filter: search
+        );
+        foreach (var queue in queues.Value)
+        {
+            Console.WriteLine($"ID: {queue.Id}, Name: {queue.Name}");
+        }
+        return queues;
+    }
 
     public static async Task<UsersResponse> GetListWithParams(UsersService usersApi, string miasto, string search)
     {
