@@ -17,9 +17,9 @@ public class Program
 
     public static async Task Main(string[] args)
     {
-        string basePath = "https://3cx-decathlon-stage.3cx.pl:5001";
+        string basePath = "https://";
         string username = "123";
-        string password = "08b0F4ubdvE4FpNKEbiA7Q52qK16FEwf";
+        string password = "08b0F4ubdvE4";
         /*   var configuration = new ConfigurationBuilder()
                       .SetBasePath(AppContext.BaseDirectory)
                       .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
