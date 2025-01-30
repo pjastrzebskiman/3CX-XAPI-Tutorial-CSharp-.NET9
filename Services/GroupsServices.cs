@@ -212,7 +212,20 @@ namespace _3CX_API_20.Services
             }
         }
 
-        public async Task UpdateGroupAsync(int id, Groups group)
+        public async Task UpdateGroupAsync(int id, string jsonBody)
+        {
+            var endpoint = $"Groups({id})";
+            var patchMethod = new HttpMethod("PATCH");
+            var request = await _apiService.CreateRequestAsync(patchMethod, endpoint);
+
+           // string jsonBody = JsonSerializer.Serialize(group);
+            request.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.SendAsync(request);
+
+            response.EnsureSuccessStatusCode();
+        }
+        public async Task UpdateGroupAsync(int id, GroupMembersUpdate group)
         {
             var endpoint = $"Groups({id})";
             var patchMethod = new HttpMethod("PATCH");
@@ -225,7 +238,8 @@ namespace _3CX_API_20.Services
 
             response.EnsureSuccessStatusCode();
         }
-        public async Task UpdateGroupAsync(int id, GroupMembersUpdate group)
+
+        public async Task UpdateGroupAsync(int id, GroupMembersUpdate_deleteOne group)
         {
             var endpoint = $"Groups({id})";
             var patchMethod = new HttpMethod("PATCH");
