@@ -29,7 +29,7 @@ namespace _3CX_API_20.Services
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             Console.WriteLine($"Request URL: {_httpClient.BaseAddress}{endpoint}");
-            Console.WriteLine($"Authorization Header: Bearer {token}");
+          //  Console.WriteLine($"Authorization Header: Bearer {token}");
             return request;
         }
     }
