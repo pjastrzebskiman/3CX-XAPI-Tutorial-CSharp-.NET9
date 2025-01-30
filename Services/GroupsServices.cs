@@ -1,4 +1,5 @@
-﻿using _3CX_API_20.Models;
+﻿using _3CX_API_20.Helpers;
+using _3CX_API_20.Models;
 using Microsoft.AspNetCore.WebUtilities;
 using System;
 using System.Collections.Generic;
@@ -138,16 +139,16 @@ namespace _3CX_API_20.Services
             return result;
         }
     
-        public async Task<GroupsResponse> ListMembersAsync(
-          int id,
-          int? top = null,
-          int? skip = null,
-          string search = null,
-          string filter = null,
-          bool? count = null,
-          HashSet<string> orderby = null,
-          HashSet<string> select = null,
-          HashSet<string> expand = null)
+            public async Task<string> ListMembersAsync(
+            int id,
+            int? top = null,
+            int? skip = null,
+            string? search = null,
+            string? filter = null,
+            bool? count = null,
+            HashSet<string>? orderby = null,
+            HashSet<string>? select = null,
+            HashSet<string>? expand = null)
         {
             string endpoint = $"Groups({id})/Members";
 
@@ -174,26 +175,41 @@ namespace _3CX_API_20.Services
                 ? "?" + string.Join("&", queryParameters)
                 : string.Empty;
 
-            var request = await _apiService.CreateRequestAsync(HttpMethod.Get, endpoint + queryString);
 
-            var response = await _httpClient.SendAsync(request);
-
-            if (!response.IsSuccessStatusCode)
+            try
             {
-                var errorContent = await response.Content.ReadAsStringAsync();
-                throw new Exception($"GET {endpoint} failed with status {response.StatusCode}. Response: {errorContent}");
+                var request = await _apiService.CreateRequestAsync(HttpMethod.Get, endpoint + queryString);
+
+                var response = await _httpClient.SendAsync(request);
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    throw new Exception($"GET {endpoint} failed with status {response.StatusCode}. Response: {errorContent}");
+                }
+
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+
+
+                // var a =  RightsHelper.GetRightsFlagsForId(jsonResponse, 22097);
+
+                /*   var groupsResponse = JsonSerializer.Deserialize<GroupMembers>(
+                       jsonResponse,
+                       new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                   );
+
+                   if (groupsResponse == null)
+                   {
+                       throw new Exception("Failed to deserialize groups response.");
+                   }
+
+                   return groupsResponse;*/
+                return jsonResponse;
             }
-
-            var json = await response.Content.ReadAsStringAsync();
-
-            var options = new JsonSerializerOptions
+            catch (Exception ex)
             {
-                PropertyNameCaseInsensitive = true
-            };
-
-            var result = JsonSerializer.Deserialize<GroupsResponse>(json, options);
-
-            return result;
+                Console.WriteLine(ex.Message);
+                throw;
+            }
         }
 
         public async Task UpdateGroupAsync(int id, Groups group)

@@ -23,6 +23,7 @@ namespace _3CX_API_20.Services
             using var content = new FormUrlEncodedContent(formParams);
             var requestUri = $"{basePath}/connect/token";
 
+            
             var response = await HttpClient.PostAsync(requestUri, content);
 
             if (!response.IsSuccessStatusCode)

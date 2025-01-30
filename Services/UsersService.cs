@@ -67,6 +67,7 @@ namespace _3CX_API_20.Services
             var usersResponse = JsonSerializer.Deserialize<UsersResponse>(jsonResponse, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
+               // DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             });
 
             if (usersResponse == null)

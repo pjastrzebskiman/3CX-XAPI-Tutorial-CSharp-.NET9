@@ -33,7 +33,7 @@ namespace _3CX_API_20.Models
             public bool AssignClearOperations { get; set; }
              public bool CanSeeGroupRecordings { get; set; }
              public bool Invalid { get; set; }
-            public bool ShowMyCalls { get; set; }
+            public bool ShowMyCalls { get; set; }//showmycalls
             public bool CanBargeIn { get; set; }//Barge-in, Listen & Whisper
             public bool ShowMyPresence { get; set; }
              public bool ShowMyPresenceOutside { get; set; }
