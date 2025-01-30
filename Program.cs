@@ -14,25 +14,29 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public class Program
 {
+
     public static async Task Main(string[] args)
     {
-        /*string basePath = "https://voice-3cx-devtest.3cx.pl:5001";
+        string basePath = "https://3cx-decathlon-stage.3cx.pl:5001";
         string username = "123";
-        string password = "IKP7nvjODlnFfkc8XUF7DnfN46PBoL3w";*/
-        var configuration = new ConfigurationBuilder()
-                   .SetBasePath(AppContext.BaseDirectory)
-                   .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                   .Build();
+        string password = "08b0F4ubdvE4FpNKEbiA7Q52qK16FEwf";
+        /*   var configuration = new ConfigurationBuilder()
+                      .SetBasePath(AppContext.BaseDirectory)
+                      .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                      .Build();
 
-        string basePath = configuration["ApiConfig:BasePath"];
-        string username = configuration["ApiConfig:Username"];
-        string password = configuration["ApiConfig:Password"];
+           string basePath = configuration["ApiConfig:BasePath"];
+           string username = configuration["ApiConfig:Username"];
+           string password = configuration["ApiConfig:Password"];
 
-        Console.WriteLine($"BasePath: {basePath}");
-        Console.WriteLine($"Username: {username}");
-        Console.WriteLine($"Password: {password}");
+           Console.WriteLine($"BasePath: {basePath}");
+           Console.WriteLine($"Username: {username}");
+           Console.WriteLine($"Password: {password}");*/
 
-        var factory = new ApiConfigurationFactory(basePath, username, password);
+
+
+
+    var factory = new ApiConfigurationFactory(basePath, username, password);
         ApiConfiguration config = factory.CreateXAPIConfiguration();
 
         var httpClient = new HttpClient();
@@ -175,12 +179,84 @@ public class Program
                                       // c.usunie użytkowników z kolejki XX1<końcówka numeru kolejki>
                                       break;
 
-                                  case "6":
+                                    case "5":
+
+                        /* string filterusercfd = $"Number eq '03501'";
+                         var usercfd = await usersApi.ListUserAsync(
+                             top: 10,
+                             filter: filterusercfd,
+                             select: new HashSet<string> { "Id" }
+                         );
+                         var usercfdid = usercfd.Value[0].Id;*/
+                        var userNumber = "03571";
+
+                        string filtergroupcfd = $"Name eq '03.03.Turystyka.Bielany'";
+                        var groupIDcfd = await GetGroupIdByParams(groupsService, miasto, filtergroupcfd);
+                        Console.WriteLine($"Group ID: {groupIDcfd}");
+
+                        // Pobranie listy użytkowników w grupie
+                        var a = await groupsService.ListMembersAsync(groupIDcfd, select: new HashSet<string> { "Number", "Id" });
+                        Console.WriteLine($"{a}");
+
+                        // Deserializacja JSON
+                        var groupsResponse = JsonSerializer.Deserialize<GroupMembersUpdate_deleteOne>(
+                            a,
+                            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                        );
+
+                        if (groupsResponse == null)
+                        {
+                            throw new Exception("Failed to deserialize groups response.");
+                        }
+
+                        Console.WriteLine("Przed usunięciem:");
+                        foreach (var group in groupsResponse.Value)
+                        {
+                            Console.WriteLine($"ID: {group.Id}, Number: {group.Number}");
+                        }
+
+                        // ID użytkownika do usunięcia
+
+                        // Usunięcie użytkownika z listy
+                        groupsResponse.Value = groupsResponse.Value
+                            .Where(user => user.Number != userNumber)
+                            .ToList();
+
+                        var newRequestObject = new MemberUpdate_deleteOne_add
+                        {
+                            Members = groupsResponse.Value
+                        };
+
+                        Console.WriteLine("Po usunięciu:");
+                        foreach (var group in groupsResponse.Value)
+                        {
+                            Console.WriteLine($"ID: {group.Id}, Number: {group.Number}");
+                         
+                        }
+
+                        string newJsonRequest = JsonSerializer.Serialize(newRequestObject, new JsonSerializerOptions { WriteIndented = true });
+
+                        Console.WriteLine("Nowy JSON do wysłania:");
+                        Console.WriteLine(newJsonRequest);
+
+
+
+
+
+
+                        // Aktualizacja grupy po usunięciu użytkownika
+                        await groupsService.UpdateGroupAsync(groupIDcfd, newJsonRequest);
+                        Console.WriteLine("Grupa zaktualizowana.");
+
+
+                        break;
+
+                    case "6":
                                       exit = true;
                                       Console.WriteLine("Zakończono program. Naciśnij dowolny klawisz...");
                                       Console.ReadKey();
                                       break;
-                                  default:
+                    default:
                                       Console.WriteLine("Nieprawidłowy wybór. Naciśnij dowolny klawisz, aby spróbować ponownie.");
                                       Console.ReadKey();
                                       break;
